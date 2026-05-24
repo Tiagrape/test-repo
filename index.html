@@ -30,6 +30,17 @@
       >
       <button type="submit">添加</button>
     </form>
+    <div class="todo-toolbar" id="todo-toolbar">
+      <button type="button" id="btn-toggle-select" class="toolbar-btn toolbar-btn--muted">
+        批量管理
+      </button>
+      <button type="button" id="btn-delete-selected" class="toolbar-btn" disabled hidden>
+        删除选中
+      </button>
+      <button type="button" id="btn-clear-all" class="toolbar-btn toolbar-btn--muted">
+        清空全部
+      </button>
+    </div>
     <ul id="todo-list" class="todo-list"></ul>
   </main>
   <script src="script.js"></script>
