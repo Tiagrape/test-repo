@@ -66,6 +66,7 @@ h1{text-align:center;font-size:20px;margin-bottom:15px}
 <h1>渠道类目树</h1>
 <div class="tb">
   <button onclick="exportJSON()">导出 JSON</button>
+  <button onclick="importJSON()">导入 JSON</button>
   <button onclick="addL1()">+ 新增一级</button>
 </div>
 
@@ -264,6 +265,23 @@ function exportJSON(){
   const clean=n=>({n:n.n,...(n.d?{d:n.d}:{}),...(n.t&&n.t.length?{t:n.t}:{}),...(n.k&&n.k.length?{k:n.k.map(clean)}:{})});
   const json=JSON.stringify(DATA.map(clean),null,2);
   const b=new Blob([json],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='channel-tree.json';a.click();
+}
+
+function importJSON(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(){
+    const f=inp.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=function(e){
+      try{
+        const d=JSON.parse(e.target.result);
+        if(!Array.isArray(d)){alert('格式错误：不是有效的类目树 JSON');return;}
+        DATA.length=0;d.forEach(x=>DATA.push(x));build();
+      }catch(err){alert('解析失败：'+err.message);}
+    };
+    r.readAsText(f);
+  };
+  inp.click();
 }
 
 build();
