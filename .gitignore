@@ -1,0 +1,17 @@
+# birthday page
+*.py
+*.zip
+*.txt
+*.json
+__pycache__/
+.venv/
+.idea/
+.DS_Store
+0507byd/
+0507yd/
+1.21zeng/
+3.18/
+downloads_cdse/
+generated_eps/
+painting/
+.claude/
