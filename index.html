@@ -1,48 +1,187 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>待办清单</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="app">
-    <header class="app-header">
-      <h1>待办清单</h1>
-      <img
-        src="assets/hello-kitty.png"
-        alt=""
-        class="kitty-sticker"
-        width="88"
-        height="88"
-        decoding="async"
-        aria-hidden="true"
-      >
-    </header>
-    <form id="todo-form" class="todo-form">
-      <input
-        type="text"
-        id="todo-input"
-        placeholder="写下一条计划..."
-        autocomplete="off"
-        required
-      >
-      <button type="submit">添加</button>
-    </form>
-    <div class="todo-toolbar" id="todo-toolbar">
-      <button type="button" id="btn-toggle-select" class="toolbar-btn toolbar-btn--muted">
-        批量管理
-      </button>
-      <button type="button" id="btn-delete-selected" class="toolbar-btn" disabled hidden>
-        删除选中
-      </button>
-      <button type="button" id="btn-clear-all" class="toolbar-btn toolbar-btn--muted">
-        清空全部
-      </button>
-    </div>
-    <ul id="todo-list" class="todo-list"></ul>
-  </main>
-  <script src="script.js"></script>
-</body>
-</html>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>🐑 绵绵，生日快乐！🎂</title>
+<style>
+:root{--sw:#fef9f0;--td:#5a4a6a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#fce4ec 0%,#f3e5f5 30%,#e8eaf6 60%,#e0f2f1 100%);background-attachment:fixed;min-height:100vh;overflow-x:hidden;color:var(--td);cursor:default}
+.cloud{position:fixed;background:white;border-radius:50%;opacity:.6;pointer-events:none;z-index:0;animation:cloudFloat linear infinite}
+.cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%}
+@keyframes cloudFloat{0%{transform:translateX(-200px)}100%{transform:translateX(calc(100vw + 400px))}}
+.grass-container{position:fixed;bottom:0;left:0;width:100%;height:120px;pointer-events:none;z-index:0;overflow:hidden}
+.grass-blade{position:absolute;bottom:0;width:3px;background:linear-gradient(to top,#81c784,#a5d6a7);border-radius:50% 50% 0 0;animation:sway 3s ease-in-out infinite;transform-origin:bottom center}
+@keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.sheep{position:fixed;pointer-events:none;z-index:2;animation:sheepWalk 20s linear infinite}
+.sheep-wool{width:60px;height:50px;background:var(--sw);border-radius:50%;position:relative;box-shadow:-8px -5px 0 -2px #fff,8px -5px 0 -2px #fff,0px -12px 0 -2px #fff,-5px 5px 0 -2px #fff,5px 5px 0 -2px #fff,0 8px 15px rgba(0,0,0,.1)}
+.sheep-face{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:28px;height:24px;background:#ffe0d0;border-radius:50%;z-index:2}
+.sheep-eye{position:absolute;width:4px;height:4px;background:#333;border-radius:50%;top:7px}
+.sheep-eye.left{left:6px}.sheep-eye.right{right:6px}
+.sheep-ear{position:absolute;width:14px;height:8px;background:#ffe0d0;border-radius:50%;top:-3px}
+.sheep-ear.left{left:-12px;transform:rotate(-30deg)}.sheep-ear.right{right:-12px;transform:rotate(30deg)}
+.sheep-legs{display:flex;justify-content:center;gap:10px;margin-top:-3px}
+.sheep-leg{width:5px;height:20px;background:#ddd;border-radius:0 0 3px 3px;animation:legWalk 1s ease-in-out infinite}
+.sheep-leg:nth-child(2),.sheep-leg:nth-child(4){animation-delay:.5s}
+@keyframes legWalk{0%,100%{transform:rotate(0)}50%{transform:rotate(15deg)}}
+@keyframes sheepWalk{0%{left:-100px}100%{left:calc(100vw + 100px)}}
+.container{position:relative;z-index:10;max-width:800px;margin:0 auto;padding:40px 20px 140px}
+.header{text-align:center;padding:60px 0 30px}
+.header-sheep{font-size:80px;animation:sheepBounce 2s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 8px 16px rgba(0,0,0,.15));cursor:pointer}
+@keyframes sheepBounce{0%,100%{transform:translateY(0)scale(1)}50%{transform:translateY(-15px)scale(1.08)}}
+.title{font-size:clamp(3rem,8vw,5rem);font-weight:900;background:linear-gradient(135deg,#e91e63,#9c27b0,#3f51b5,#00bcd4);background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s ease infinite;margin:20px 0 10px}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.subtitle{font-size:1.4rem;color:#888;font-weight:300;letter-spacing:4px}
+.zodiac-badge{display:inline-flex;align-items:center;gap:10px;background:white;border-radius:50px;padding:12px 28px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin:20px 0;font-size:1.1rem;color:#888}
+.zodiac-badge .sheep-icon{font-size:2rem;animation:sheepBounce 2s ease-in-out infinite}
+.photo-entry{text-align:center;margin:30px 0}
+.photo-btn-big{display:inline-flex;flex-direction:column;align-items:center;gap:12px;padding:30px 50px;background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.4));backdrop-filter:blur(15px);border:2px dashed rgba(161,140,209,.4);border-radius:25px;cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,1.275);font-family:inherit;font-size:1rem;color:var(--td);box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.photo-btn-big:hover{transform:translateY(-4px);box-shadow:0 16px 45px rgba(0,0,0,.12);border-color:#a18cd1}
+.photo-btn-icon{font-size:50px;animation:sheepBounce 2s ease-in-out infinite}
+.photo-btn-text{font-size:1.3rem;font-weight:600}
+.photo-btn-count{font-size:.85rem;color:#bbb}
+.wish-card{background:rgba(255,255,255,.7);backdrop-filter:blur(20px);border-radius:30px;padding:40px 30px;text-align:center;margin:40px 0;box-shadow:0 10px 40px rgba(0,0,0,.08);border:2px solid rgba(255,255,255,.8);position:relative;overflow:hidden}
+.wish-card>*{position:relative;z-index:1}
+.wish-card .sheep-ears{font-size:28px;margin-bottom:15px}
+.wish-card h2{font-size:1.8rem;color:#e91e63;margin-bottom:20px}
+.wish-card p{font-size:1.15rem;line-height:2.2;color:#666}
+.wish-card .highlight{font-size:1.4rem;font-weight:700;color:#9c27b0;display:block;margin:20px 0}
+.btn-group{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:30px 0}
+.btn{padding:15px 35px;border:none;border-radius:50px;font-size:1.05rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .3s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.btn-pink{background:linear-gradient(135deg,#fce4ec,#f8bbd0);color:#c2185b}
+.btn-purple{background:linear-gradient(135deg,#f3e5f5,#ce93d8);color:#6a1b9a}
+.btn-blue{background:linear-gradient(135deg,#e3f2fd,#90caf9);color:#1565c0}
+.btn-gold{background:linear-gradient(135deg,#fff9c4,#ffcc80);color:#e65100}
+.btn:hover{transform:translateY(-4px)scale(1.05);box-shadow:0 14px 35px rgba(0,0,0,.18)}
+.btn:active{transform:translateY(0)scale(.97)}
+.cake-container{text-align:center;margin:40px 0;position:relative}
+.cake-emoji{font-size:clamp(100px,20vw,160px);cursor:pointer;transition:transform .3s ease;display:inline-block;filter:drop-shadow(0 10px 25px rgba(0,0,0,.2));animation:cakeWiggle 4s ease-in-out infinite}
+.cake-emoji:hover{transform:scale(1.1)}
+@keyframes cakeWiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.candle-flame{position:absolute;top:-5px;left:50%;transform:translateX(-50%);font-size:28px;animation:flicker .6s ease-in-out infinite alternate;pointer-events:none}
+@keyframes flicker{0%{opacity:1;transform:translateX(-50%)scale(1)}100%{opacity:.6;transform:translateX(-50%)scale(1.3)}}
+.blow-hint{color:#999;font-size:.9rem;margin-top:10px;animation:fadeInOut 2s ease-in-out infinite}
+@keyframes fadeInOut{0%,100%{opacity:.4}50%{opacity:1}}
+.sheep-wool-particle{position:fixed;pointer-events:none;z-index:50;font-size:20px;animation:woolFall linear forwards}
+@keyframes woolFall{0%{transform:translateY(-20px)rotate(0deg)scale(1);opacity:1}100%{transform:translateY(100vh)rotate(720deg)scale(.3);opacity:0}}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:900;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)scale(.7);background:white;border-radius:25px;padding:40px;text-align:center;z-index:901;max-width:420px;width:90%;box-shadow:0 25px 80px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:all .4s cubic-bezier(.175,.885,.32,1.275)}
+.modal.active{opacity:1;pointer-events:all;transform:translate(-50%,-50%)scale(1)}
+.modal h3{font-size:1.6rem;margin-bottom:15px;color:#e91e63}
+.modal p{color:#666;line-height:1.8;font-size:1.05rem;margin-bottom:20px}
+.modal-close{padding:12px 30px;background:linear-gradient(135deg,#e91e63,#9c27b0);color:white;border:none;border-radius:25px;cursor:pointer;font-size:1rem;font-family:inherit;transition:transform .3s ease}
+.modal-close:hover{transform:scale(1.05)}
+.slideshow-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:1000;opacity:0;pointer-events:none;transition:opacity .5s ease;display:flex;align-items:center;justify-content:center}
+.slideshow-overlay.active{opacity:1;pointer-events:all}
+.slideshow-img-container{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.slideshow-img{max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 20px 80px rgba(0,0,0,.6);opacity:0;transform:scale(.92);transition:opacity .6s ease,transform .6s cubic-bezier(.175,.885,.32,1.275);position:absolute}
+.slideshow-img.active{opacity:1;transform:scale(1)}
+.slideshow-img.slide-out-left{opacity:0;transform:translateX(-80px)scale(.9)}
+.slideshow-img.slide-out-right{opacity:0;transform:translateX(80px)scale(.9)}
+.slideshow-img.slide-in-from-right{animation:slideInFromRight .6s cubic-bezier(.175,.885,.32,1.275)forwards}
+.slideshow-img.slide-in-from-left{animation:slideInFromLeft .6s cubic-bezier(.175,.885,.32,1.275)forwards}
+@keyframes slideInFromRight{0%{opacity:0;transform:translateX(80px)scale(.9)}100%{opacity:1;transform:translateX(0)scale(1)}}
+@keyframes slideInFromLeft{0%{opacity:0;transform:translateX(-80px)scale(.9)}100%{opacity:1;transform:translateX(0)scale(1)}}
+.slideshow-close{position:absolute;top:20px;right:30px;font-size:40px;color:rgba(255,255,255,.7);cursor:pointer;z-index:1001;transition:all .3s ease;background:none;border:none}
+.slideshow-close:hover{transform:scale(1.2)rotate(90deg);color:#fff}
+.slideshow-nav{position:absolute;top:50%;transform:translateY(-50%);font-size:36px;color:rgba(255,255,255,.6);cursor:pointer;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);width:55px;height:55px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s ease;z-index:1001}
+.slideshow-nav:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4)}
+.slideshow-nav:active{transform:translateY(-50%)scale(.9)}
+.slideshow-prev{left:25px}.slideshow-next{right:25px}
+.slideshow-counter{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:.9rem;letter-spacing:2px}
+.slideshow-hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.3);font-size:.8rem;pointer-events:none;transition:opacity 2s ease}
+.slideshow-dots{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:1001}
+.slideshow-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);border:none;cursor:pointer;transition:all .3s ease;padding:0}
+.slideshow-dot.active{background:#fff;transform:scale(1.3)}
+.wish-form-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)scale(.7);background:white;border-radius:25px;padding:0;text-align:center;z-index:901;max-width:450px;width:90%;box-shadow:0 25px 80px rgba(0,0,0,.3);opacity:0;pointer-events:none;overflow:hidden;transition:all .4s cubic-bezier(.175,.885,.32,1.275)}
+.wish-form-modal.active{opacity:1;pointer-events:all;transform:translate(-50%,-50%)scale(1)}
+.wish-form-header{background:linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1);padding:25px 20px 20px;color:white}
+.wish-form-header h3{font-size:1.5rem;margin:0 0 5px}
+.wish-form-header p{font-size:.9rem;opacity:.85;margin:0}
+.wish-form-body{padding:25px}
+.wish-form-body textarea{width:100%;height:120px;border:2px solid #eee;border-radius:15px;padding:15px;font-size:1.05rem;font-family:inherit;resize:none;outline:none;transition:border-color .3s ease;line-height:1.6}
+.wish-form-body textarea:focus{border-color:#a18cd1}
+.char-count{text-align:right;color:#ccc;font-size:.8rem;margin-top:5px}
+.wish-form-actions{display:flex;gap:10px;padding:0 25px 25px;justify-content:center}
+.wish-submit{padding:12px 35px;background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:white;border:none;border-radius:25px;cursor:pointer;font-size:1rem;font-weight:600;font-family:inherit;transition:all .3s ease;box-shadow:0 4px 15px rgba(161,140,209,.3)}
+.wish-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(161,140,209,.4)}
+.wish-cancel{padding:12px 25px;background:#f5f5f5;color:#999;border:none;border-radius:25px;cursor:pointer;font-size:1rem;font-family:inherit;transition:all .3s ease}
+.wish-cancel:hover{background:#eee}
+.admin-panel{position:fixed;top:0;right:0;width:380px;max-width:90vw;height:100%;background:white;z-index:950;box-shadow:-5px 0 40px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:30px 25px}
+.admin-panel.active{transform:translateX(0)}
+.admin-panel h3{font-size:1.4rem;margin-bottom:10px;color:#5a4a6a;display:flex;align-items:center;gap:8px}
+.admin-hint{font-size:.85rem;color:#bbb;margin-bottom:20px}
+.admin-close{position:absolute;top:15px;right:20px;font-size:24px;cursor:pointer;color:#ccc;transition:color .3s ease;background:none;border:none}
+.admin-close:hover{color:#333}
+.wish-item{background:#fafafa;border-radius:15px;padding:18px;margin-bottom:15px;border-left:4px solid #a18cd1;position:relative}
+.wish-item .wish-text{font-size:1rem;color:#555;line-height:1.7;white-space:pre-wrap}
+.wish-item .wish-time{font-size:.8rem;color:#bbb;margin-top:8px}
+.wish-status{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.75rem;margin-left:8px;font-weight:600}
+.wish-status.pending{background:#fff3cd;color:#856404}
+.wish-status.done{background:#d4edda;color:#155724}
+.no-wishes{text-align:center;color:#ccc;padding:40px 0;font-size:.95rem}
+.admin-panel-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.3);z-index:949;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.admin-panel-backdrop.active{opacity:1;pointer-events:all}
+.admin-actions{display:flex;gap:8px;margin-top:12px}
+.admin-btn{padding:6px 14px;border:none;border-radius:15px;font-size:.8rem;cursor:pointer;font-family:inherit;transition:all .3s ease}
+.admin-btn-done{background:#d4edda;color:#155724}.admin-btn-done:hover{background:#c3e6cb}
+.admin-btn-delete{background:#f8d7da;color:#721c24}.admin-btn-delete:hover{background:#f5c6cb}
+.admin-btn-copy{background:#d4e8ff;color:#004085}.admin-btn-copy:hover{background:#c3d9ff}
+.admin-refresh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+#fireworkCanvas{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}
+.footer{text-align:center;color:#bbb;font-size:.85rem;padding:40px 0}
+.footer .sheep-row{font-size:24px;letter-spacing:8px;margin-bottom:10px;animation:sheepBounce 2s ease-in-out infinite;display:block}
+@media(max-width:600px){.container{padding:20px 15px 120px}.btn{padding:12px 25px;font-size:.95rem}.photo-btn-big{padding:25px 35px}.slideshow-nav{width:40px;height:40px;font-size:24px}.slideshow-prev{left:10px}.slideshow-next{right:10px}}
+</style></head><body>
+<canvas id="fireworkCanvas"></canvas>
+<div id="clouds"></div>
+<div class="grass-container" id="grass"></div>
+<div class="container">
+<div class="header"><div class="header-sheep">🐑</div><h1 class="title">绵绵生日快乐</h1><p class="subtitle">又长大一岁了啊 🐑</p><div class="zodiac-badge"><span class="sheep-icon">🐏</span><span>属羊的绵绵</span><span class="sheep-icon">🐑</span></div></div>
+<div class="photo-entry"><button class="photo-btn-big" onclick="openSlideshow(0)"><span class="photo-btn-icon">📸</span><span class="photo-btn-text">翻翻绵绵的照片</span><span class="photo-btn-count">共 14 张 → 点击查看</span></button></div>
+<div class="wish-card"><div class="sheep-ears">🐑 🎂 🐑</div><h2>🐏 嘿，绵绵</h2><p>又是一年生日到了<br>别的不多说<br><span class="highlight">🐑 天天开心，身体健康 🐑</span>吃好喝好睡好<br>该吃吃该喝喝，遇事别往心里搁<br>行了，吹蜡烛吧 ↓</p></div>
+<div class="cake-container"><div class="cake-emoji" id="cake" onclick="blowCandle()">🎂<span class="candle-flame" id="flame">🕯️</span></div><p class="blow-hint">👆 点一下蜡烛</p></div>
+<div class="btn-group"><button class="btn btn-pink" onclick="showSheepSurprise()">🐑 小羊攻击</button><button class="btn btn-purple" onclick="spawnFireworks()">🎆 放烟花</button><button class="btn btn-blue" onclick="showBlessing()">💬 祝福</button><button class="btn btn-gold" onclick="makeWish()">🌟 绵绵许愿</button></div>
+<div class="footer"><span class="sheep-row">🐑 🐏 🐑 🐏 🐑 🐏 🐑</span><p>行了，就这些，生日开心 🎉</p></div>
+</div>
+<div class="slideshow-overlay" id="slideshow"><button class="slideshow-close" onclick="closeSlideshow()">✕</button><div class="slideshow-dots" id="slideshowDots"></div><div class="slideshow-img-container" id="slideshowContainer"></div><button class="slideshow-nav slideshow-prev" onclick="slidePhoto(-1)">‹</button><button class="slideshow-nav slideshow-next" onclick="slidePhoto(1)">›</button><p class="slideshow-hint" id="slideshowHint">← → 切换照片</p><div class="slideshow-counter" id="slideshowCounter"></div></div>
+<div class="modal-overlay" id="modalOverlay"></div><div class="modal" id="modal"><h3 id="modalTitle"></h3><p id="modalContent"></p><button class="modal-close" onclick="closeModal()">好的</button></div>
+<div class="wish-form-modal" id="wishFormModal"><div class="wish-form-header"><h3>🌟 绵绵，许个愿呗</h3><p>写下来会更灵验</p></div><div class="wish-form-body"><textarea id="wishInput" placeholder="比如：想要一台新手机、想去旅行、想瘦十斤..." maxlength="200" oninput="updateCharCount()"></textarea><div class="char-count"><span id="charCount">0</span>/200</div></div><div class="wish-form-actions"><button class="wish-cancel" onclick="closeWishForm()">算了</button><button class="wish-submit" onclick="submitWish()">✨ 许愿</button></div></div>
+<div class="admin-panel-backdrop" id="adminBackdrop" onclick="closeAdminPanel()"></div><div class="admin-panel" id="adminPanel"><button class="admin-close" onclick="closeAdminPanel()">✕</button><div class="admin-refresh"><h3>🔮 绵绵的愿望清单</h3><button class="admin-btn admin-btn-copy" onclick="copyAllWishes()">📋 复制全部</button></div><p class="admin-hint">点击 ✦ 密码面板 ✦ 可打开 | 状态保存在浏览器里</p><div id="adminWishList"></div></div>
+<script>
+const photoFiles=['0fa9f8efc45b1550636275f306632373.jpg','1e2401726ea49f90427c31088402749c.jpg','271910fbdfaa138bc779a3f1b4a3e242.jpg','2ad0cc046566538aff5d473ec41bbe94.jpg','5f3a88ae51b2546b05b9b885fe68afd1.jpg','6882f4fb48bde72f14fed56e310446a3.jpg','70c0b048cdf1dfdf1af4a32502e9ee1d.jpg','79074f101640ace44fb93876bf9c4083.jpg','8bf9f079ee7ddb2f56c8563171c12401.jpg','8f5d042d76107c4f5bc3d14c764dd1e0.jpg','aec51f3e87c2d173b4bcb255435dc751.jpg','c9248fec55cda60796ae9f3f84a5dc8f.jpg','c9ed9aab31aee38170774baec05d2f75.jpg','e12d46e56f1277501341294f516ec0a4.jpg'];
+let ci=0,so=!1;
+photoFiles.forEach(f=>{const i=new Image();i.src='photos/'+f});
+function openSlideshow(i){ci=i;so=!0;document.getElementById('slideshow').classList.add('active');document.body.style.overflow='hidden';const c=document.getElementById('slideshowContainer');c.innerHTML='';const m=document.createElement('img');m.src='photos/'+photoFiles[ci];m.className='slideshow-img active';m.alt='照片 '+(ci+1);c.appendChild(m);renderDots();updateCounter();setTimeout(()=>{document.getElementById('slideshowHint').style.opacity='0'},4000)}
+function closeSlideshow(){document.getElementById('slideshow').classList.remove('active');document.body.style.overflow='';so=!1;document.getElementById('slideshowHint').style.opacity='1'}
+function slidePhoto(d){if(!so)return;ci=(ci+d+photoFiles.length)%photoFiles.length;const c=document.getElementById('slideshowContainer'),o=c.querySelector('img');if(o){o.classList.remove('active');o.classList.add(d>0?'slide-out-left':'slide-out-right');setTimeout(()=>{if(o.parentNode)o.remove()},600)}const n=document.createElement('img');n.src='photos/'+photoFiles[ci];n.className='slideshow-img';n.classList.add(d>0?'slide-in-from-right':'slide-in-from-left');c.appendChild(n);setTimeout(()=>{n.classList.remove('slide-in-from-right','slide-in-from-left');n.classList.add('active')},600);renderDots();updateCounter()}
+function renderDots(){document.getElementById('slideshowDots').innerHTML=photoFiles.map((_,i)=>'<button class="slideshow-dot'+(i===ci?' active':'')+'" onclick="jumpToPhoto('+i+')"></button>').join('')}
+function jumpToPhoto(i){document.getElementById('slideshowContainer').innerHTML='';ci=i;const m=document.createElement('img');m.src='photos/'+photoFiles[ci];m.className='slideshow-img active';container=m;document.getElementById('slideshowContainer').appendChild(m);renderDots();updateCounter()}
+function updateCounter(){document.getElementById('slideshowCounter').textContent=(ci+1)+' / '+photoFiles.length}
+document.addEventListener('keydown',e=>{if(!so)return;if(e.key==='Escape')closeSlideshow();if(e.key==='ArrowLeft')slidePhoto(-1);if(e.key==='ArrowRight')slidePhoto(1)});
+let tx=0;document.getElementById('slideshow').addEventListener('touchstart',e=>{tx=e.touches[0].clientX});document.getElementById('slideshow').addEventListener('touchend',e=>{if(!so)return;const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)slidePhoto(d>0?1:-1)});
+function showModal(t,c){document.getElementById('modalTitle').textContent=t;document.getElementById('modalContent').innerHTML=c;document.getElementById('modal').classList.add('active');document.getElementById('modalOverlay').classList.add('active')}
+function closeModal(){document.getElementById('modal').classList.remove('active');document.getElementById('modalOverlay').classList.remove('active')}
+document.getElementById('modalOverlay').onclick=closeModal;
+function showSheepSurprise(){spawnSheepParty();showModal('🐑 羊来了！','咩咩咩！<br><br>小羊空降！<br>绵绵属羊果然名不虚传<br><br>行了行了<br>生日快乐就完事儿了 🐑')}
+function showBlessing(){const b=['生日快乐绵绵 🎂<br>身体健康，滑雪滑得越来越好 ⛷️<br>一直上学不上班 ✨','新的一岁<br>身体健康最重要<br>滑雪技术更上一层楼 🏔️<br>继续当快乐的学生党','祝绵绵<br>吃好睡好身体好<br>滑雪摔不疼，考试全通过<br>永远不用感受上班的苦 😎','生日快乐！<br>身体健康排第一<br>雪道上越滑越帅 ⛷️<br>校园生活继续爽'];showModal('🎉 祝福',b[Math.floor(Math.random()*b.length)])}
+function makeWish(){openWishForm()}
+function openWishForm(){document.getElementById('wishInput').value='';document.getElementById('charCount').textContent='0';document.getElementById('wishFormModal').classList.add('active');document.getElementById('modalOverlay').classList.add('active');setTimeout(()=>document.getElementById('wishInput').focus(),400)}
+function closeWishForm(){document.getElementById('wishFormModal').classList.remove('active');document.getElementById('modalOverlay').classList.remove('active')}
+function updateCharCount(){document.getElementById('charCount').textContent=document.getElementById('wishInput').value.length}
+function submitWish(){const t=document.getElementById('wishInput').value.trim();if(!t){document.getElementById('wishInput').focus();document.getElementById('wishInput').style.borderColor='#ff6b6b';setTimeout(()=>document.getElementById('wishInput').style.borderColor='#a18cd1',1500);return}const w=JSON.parse(localStorage.getItem('mianmian_wishes')||'[]');w.push({id:Date.now(),text:t,time:new Date().toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}),status:'pending'});localStorage.setItem('mianmian_wishes',JSON.stringify(w));closeWishForm();document.getElementById('modalOverlay').classList.remove('active');spawnWoolConfetti();spawnFireworks();showModal('✨ 愿望已收到','已存档到愿望清单<br><br>放心吧<br>宇宙已经收到了你的信号 🌌')}
+function openAdminPanel(){renderAdminWishes();document.getElementById('adminPanel').classList.add('active');document.getElementById('adminBackdrop').classList.add('active');document.body.style.overflow='hidden'}
+function closeAdminPanel(){document.getElementById('adminPanel').classList.remove('active');document.getElementById('adminBackdrop').classList.remove('active');document.body.style.overflow=''}
+function renderAdminWishes(){const w=JSON.parse(localStorage.getItem('mianmian_wishes')||'[]'),c=document.getElementById('adminWishList');if(w.length===0){c.innerHTML='<div class="no-wishes">🐑 还没有愿望<br>等她许愿吧~</div>';return}c.innerHTML=[...w].reverse().map(w=>'<div class="wish-item"><div class="wish-text">'+escapeHtml(w.text)+'</div><div class="wish-time">📅 '+w.time+'<span class="wish-status '+w.status+'">'+(w.status==='done'?'✅ 已实现':'⏳ 待实现')+'</span></div><div class="admin-actions"><button class="admin-btn admin-btn-done" onclick="toggleWishStatus('+w.id+')">'+(w.status==='done'?'↩ 标记未完成':'✅ 标记完成')+'</button><button class="admin-btn admin-btn-delete" onclick="deleteWish('+w.id+')">🗑 删除</button></div></div>').join('')}
+function toggleWishStatus(id){const w=JSON.parse(localStorage.getItem('mianmian_wishes')||'[]'),f=w.find(w=>w.id===id);if(f)f.status=f.status==='done'?'pending':'done';localStorage.setItem('mianmian_wishes',JSON.stringify(w));renderAdminWishes()}
+function deleteWish(id){if(!confirm('确定删除这个愿望？'))return;let w=JSON.parse(localStorage.getItem('mianmian_wishes')||'[]');w=w.filter(w=>w.id!==id);localStorage.setItem('mianmian_wishes',JSON.stringify(w));renderAdminWishes()}
+function copyAllWishes(){const w=JSON.parse(localStorage.getItem('mianmian_wishes')||'[]');if(w.length===0){alert('还没有愿望');return}const t=[...w].map((w,i)=>(i+1)+'. ['+(w.status==='done'?'✅已实现':'⏳待实现')+'] '+w.text+' ('+w.time+')').join('\n');navigator.clipboard.writeText(t).then(()=>{alert('已复制 '+w.length+' 条愿望到剪贴板！')}).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('已复制！')})}
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+let hc=0;document.querySelector('.header-sheep').addEventListener('click',()=>{hc++;if(hc>=5){hc=0;openAdminPanel()}clearTimeout(window._hct);window._hct=setTimeout(()=>{hc=0},3000)});if(window.location.hash==='#admin')setTimeout(openAdminPanel,1000);
+let cl=!0;function blowCandle(){const f=document.getElementById('flame');if(cl){f.style.opacity='0';f.style.transition='opacity .5s ease';cl=!1;document.querySelector('.blow-hint').textContent='许愿成功 ✅';spawnWoolConfetti();setTimeout(()=>{document.querySelector('.blow-hint').textContent='👆 再点一下点燃'},3000)}else{f.style.opacity='1';cl=!0;document.querySelector('.blow-hint').textContent='👆 点一下蜡烛'}}
+function spawnWoolConfetti(){const p=['🐑','🐏','☁️','🌸','✨','💫','🎀','⭐','🎉','🎊'];for(let i=0;i<60;i++)setTimeout(()=>{const e=document.createElement('span');e.className='sheep-wool-particle';e.textContent=p[Math.floor(Math.random()*p.length)];e.style.left=Math.random()*100+'%';e.style.top=-(Math.random()*40)+'px';e.style.animationDuration=(Math.random()*3+3)+'s';e.style.fontSize=(Math.random()*20+16)+'px';document.body.appendChild(e);e.addEventListener('animationend',()=>e.remove())},i*40)}
+function spawnSheepParty(){const sc=document.createElement('div');sc.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;';document.body.appendChild(sc);for(let i=0;i<12;i++)setTimeout(()=>{const s=document.createElement('div');s.style.cssText='position:absolute;font-size:'+(Math.random()*30+30)+'px;left:'+Math.random()*90+'%;top:-60px;animation:sheepPartyFall '+(Math.random()*2+2)+'s ease-in forwards;';s.textContent=['🐑','🐏'][Math.floor(Math.random()*2)];sc.appendChild(s);s.addEventListener('animationend',()=>s.remove())},i*150);const st=document.createElement('style');st.textContent='@keyframes sheepPartyFall{0%{transform:translateY(0)rotate(0deg);opacity:1}100%{transform:translateY(105vh)rotate(360deg);opacity:0}}';document.head.appendChild(st);setTimeout(()=>{sc.remove();st.remove()},4000)}
+</script>
+<!--烟花靠后加载确保canvas ready-->
+<script>
+(function(){const cv=document.getElementById('fireworkCanvas'),cx=cv.getContext('2d');let w,h,fl=[],pl=[];function rz(){w=cv.width=innerWidth;h=cv.height=innerHeight}addEventListener('resize',rz);rz();function rd(a,b){return Math.random()*(b-a)+a}function mf(){const x=rd(.15*w,.85*w),ty=rd(.05*h,.35*h),hu=rd(0,360);let y=h;const s=rd(6,11),tr=[];return{update(){tr.push({x,y});if(tr.length>6)tr.shift();y-=s;if(y<=ty){for(let i=0,n=rd(40,80);i<n;i++){const a=rd(0,Math.PI*2),sp=rd(2,7);pl.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,decay:rd(.015,.03),hue:hu+rd(-25,25),size:rd(2,4)})}return!0}return!1},draw(){cx.globalAlpha=.4;tr.forEach(t=>{cx.beginPath();cx.arc(t.x,t.y,2,0,Math.PI*2);cx.fillStyle='hsl('+hu+',80%,70%)';cx.fill()});cx.globalAlpha=1;cx.beginPath();cx.arc(x,y,3,0,Math.PI*2);cx.fillStyle='#fff';cx.fill();cx.shadowColor='hsl('+hu+',100%,65%)';cx.shadowBlur=12;cx.fill();cx.shadowBlur=0;cx.globalAlpha=1}}}(function lp(){cx.clearRect(0,0,w,h);const nf=[];fl.forEach(f=>{if(!f.update())nf.push(f);f.draw()});fl=nf;const np=[];cx.save();pl.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.vx*=.99;p.life-=p.decay;if(p.life>0){cx.globalAlpha=p.life;cx.beginPath();cx.arc(p.x,p.y,p.size,0,Math.PI*2);cx.fillStyle='hsl('+p.hue+',100%,60%)';cx.fill();np.push(p)}});cx.restore();pl=np;requestAnimationFrame(lp)})();window.spawnFireworks=function(){for(let i=0;i<10;i++)setTimeout(function(){fl.push(mf())},i*200)};setTimeout(function(){for(let i=0;i<10;i++)setTimeout(function(){fl.push(mf())},i*200)},800)})();
+</script>
+<script>function createClouds(){const c=document.getElementById('clouds');for(let i=0;i<8;i++){const d=document.createElement('div');d.className='cloud';const s=Math.random()*60+40;d.style.width=s+'px';d.style.height=s*.6+'px';d.style.top=Math.random()*30+5+'%';d.style.animationDuration=(Math.random()*30+30)+'s';d.style.animationDelay=-(Math.random()*30)+'s';d.style.opacity=Math.random()*.3+.3;c.appendChild(d)}}function createGrass(){const g=document.getElementById('grass');for(let i=0;i<80;i++){const b=document.createElement('div');b.className='grass-blade';b.style.left=Math.random()*100+'%';b.style.height=(Math.random()*40+10)+'px';b.style.animationDuration=(Math.random()*2+2)+'s';b.style.animationDelay=-(Math.random()*3)+'s';b.style.opacity=Math.random()*.3+.2;g.appendChild(b)}}function spawnWalkingSheep(){const s=document.createElement('div');s.className='sheep';s.style.top=Math.random()*20+70+'%';s.style.animationDuration=(Math.random()*15+20)+'s';s.style.animationDelay=-(Math.random()*20)+'s';s.innerHTML='<div class="sheep-body"><div class="sheep-wool"></div><div class="sheep-face"><div class="sheep-ear left"></div><div class="sheep-ear right"></div><div class="sheep-eye left"></div><div class="sheep-eye right"></div></div><div class="sheep-legs"><div class="sheep-leg"></div><div class="sheep-leg"></div><div class="sheep-leg"></div><div class="sheep-leg"></div></div></div>';document.body.appendChild(s)}createClouds();createGrass();for(let i=0;i<4;i++)spawnWalkingSheep();setTimeout(()=>{showModal('🐑 绵绵，生日快乐','今天你生日 🎂<br><br>别的不说了<br>小羊们都来了<br><br>🐑 咩咩咩咩~ 🐑<br>（翻译：生日快乐）<br><br>点下方按钮看照片 📸')},1500);</script>
+</body></html>
