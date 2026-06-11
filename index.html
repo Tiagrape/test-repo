@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>待办清单</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app-header">
+      <h1>待办清单</h1>
+      <img
+        src="assets/hello-kitty.png"
+        alt=""
+        class="kitty-sticker"
+        width="88"
+        height="88"
+        decoding="async"
+        aria-hidden="true"
+      >
+    </header>
+    <form id="todo-form" class="todo-form">
+      <input
+        type="text"
+        id="todo-input"
+        placeholder="写下一条计划..."
+        autocomplete="off"
+        required
+      >
+      <button type="submit">添加</button>
+    </form>
+    <div class="todo-toolbar" id="todo-toolbar">
+      <button type="button" id="btn-toggle-select" class="toolbar-btn toolbar-btn--muted">
+        批量管理
+      </button>
+      <button type="button" id="btn-delete-selected" class="toolbar-btn" disabled hidden>
+        删除选中
+      </button>
+      <button type="button" id="btn-clear-all" class="toolbar-btn toolbar-btn--muted">
+        清空全部
+      </button>
+    </div>
+    <ul id="todo-list" class="todo-list"></ul>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

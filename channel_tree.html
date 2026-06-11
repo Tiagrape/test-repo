@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>渠道类目树</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#fafafa;color:#1a1a1a;padding:20px}
+h1{text-align:center;font-size:20px;margin-bottom:15px}
+.tb{text-align:center;margin-bottom:20px}
+.tb button{padding:5px 14px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;margin:0 3px}
+.tb button:hover{background:#f0f0f0}
+
+.tree{max-width:960px;margin:0 auto;font-size:13px;line-height:2}
+
+.l1{margin:20px 0 0}
+.l1t{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:8px;font-size:16px;font-weight:700;color:#fff;cursor:pointer}
+.ml1{background:#4A90D9}
+.tl1{background:#E07B39}
+.sl1{background:#8E44AD}
+
+.l2{margin:8px 0 0 40px}
+.l2t{font-weight:600;font-size:14px;cursor:pointer;padding:2px 8px;border-radius:4px}
+.l2t:hover{background:#eee}
+
+.l3{margin-left:80px;display:flex;flex-wrap:wrap;gap:6px 10px}
+.l3t{font-size:12px;color:#555;cursor:pointer;padding:2px 6px;border-radius:4px}
+.l3t:hover{background:#e8e8e8}
+
+.btn{display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:10px;color:#999;text-align:center;line-height:16px;margin-left:4px;vertical-align:middle}
+.btn:hover{background:#f0f0f0;color:#333}
+.btn.del{color:#e74c3c;border-color:#fcc}
+
+.ol{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.25);z-index:999;display:none;align-items:center;justify-content:center}
+.ol>div{background:#fff;border-radius:10px;padding:22px;min-width:260px;box-shadow:0 8px 30px rgba(0,0,0,0.15)}
+.ol input{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;outline:none;font-family:inherit}
+.ol input:focus{border-color:#4A90D9}
+.ol .bts{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+.ol button{padding:6px 14px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px}
+.ol .ok{background:#4A90D9;color:#fff;border-color:#4A90D9}
+.ol p{font-size:12px;color:#999;margin-bottom:6px}
+
+/* Tags section */
+.tags-section{max-width:960px;margin:32px auto 0;padding-top:20px;border-top:2px solid #eee}
+.tags-section h3{font-size:15px;margin-bottom:12px;color:#666}
+.tags-table{width:100%;border-collapse:collapse;font-size:12px}
+.tags-table th{background:#f0f0f0;padding:6px 10px;text-align:left;font-weight:600;color:#666;border-bottom:1px solid #ddd}
+.tags-table td{padding:6px 10px;border-bottom:1px solid #eee;vertical-align:top}
+.tags-table .node-path{color:#999;font-size:11px}
+.tag-group{display:flex;flex-wrap:wrap;gap:4px}
+.tag-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px;background:#e8e8ff;color:#777;font-size:10px;cursor:pointer}
+.tag-chip:hover{background:#d8d8ff}
+.tag-chip .tag-x{font-size:10px;color:#bbb;cursor:pointer}
+.tag-chip .tag-x:hover{color:#e74c3c}
+.tag-add{font-size:10px;color:#4A90D9;cursor:pointer;padding:2px 6px}
+.tag-add:hover{text-decoration:underline}
+.tag-dim{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px;background:#eee;color:#999;font-size:10px;cursor:pointer;margin-right:4px}
+.tag-dim:hover{background:#ddd}
+
+.leg{text-align:center;margin-top:24px;font-size:12px;color:#888}
+.leg span{margin:0 10px}
+</style>
+</head>
+<body>
+
+<h1>渠道类目树</h1>
+<div class="tb">
+  <button onclick="exportJSON()">导出 JSON</button>
+  <button onclick="importJSON()">导入 JSON</button>
+  <button onclick="addL1()">+ 新增一级</button>
+</div>
+
+<div class="tree" id="tree"></div>
+
+<div class="ol" id="ol" onclick="closeOL()">
+  <div onclick="event.stopPropagation()">
+    <p id="olp">编辑</p>
+    <input id="oli">
+    <div class="bts">
+      <button class="ok" id="olok">保存</button>
+      <button onclick="closeOL()">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="tags-section" id="tags"></div>
+
+<div class="leg">
+  <span style="color:#4A90D9">■ 现代</span>
+  <span style="color:#E07B39">■ 传统</span>
+  <span style="color:#8E44AD">■ 特通</span>
+</div>
+
+<script>
+const DATA = [
+{n:'现代渠道',c:'m',k:[
+  {n:'大卖场',d:'面积',k:[{n:'大卖场 ≥6000㎡',t:['仓储式','会员制','精品']}]},
+  {n:'购物中心',d:'商业体',k:[{n:'购物中心'}]},
+  {n:'百货店',d:'百货',k:[{n:'百货店',t:['高端','时尚','大众']}]},
+  {n:'超市',d:'面积',k:[{n:'大型超市'},{n:'中型超市',t:['精品']},{n:'小型超市'}]},
+  {n:'便利店',d:'不细分',k:[{n:'便利店',t:['无人值守','线上履约']}]},
+  {n:'专卖店',d:'品类',k:[{n:'烟酒店'},{n:'茶叶店'},{n:'电子烟店'},{n:'零食店'},{n:'干果炒货店'},{n:'滋补品店'},{n:'美妆日化店'},{n:'药妆店'},{n:'药房'},{n:'母婴店'},{n:'宠物店'},{n:'水果店'},{n:'肉类店'},{n:'熟食店'},{n:'水产店'},{n:'冻品店'},{n:'生鲜店'},{n:'文创潮玩店'},{n:'文具店'},{n:'玩具店'},{n:'3C数码店'},{n:'花店'},{n:'电池店'},{n:'棋牌设备店'},{n:'乳企奶亭'}]}
+]},
+{n:'传统渠道',c:'t',k:[
+  {n:'超市',d:'面积',k:[{n:'大型超市'},{n:'中型超市'},{n:'小型超市'}]},
+  {n:'便利店',d:'不细分',k:[{n:'便利店'}]},
+  {n:'专卖店',d:'品类',k:[{n:'烟酒店'},{n:'茶叶店'},{n:'电子烟店'},{n:'零食店'},{n:'干果炒货店'},{n:'滋补品店'},{n:'美妆日化店'},{n:'药妆店'},{n:'药房'},{n:'母婴店'},{n:'宠物店'},{n:'水果店'},{n:'肉类店'},{n:'熟食店'},{n:'水产店'},{n:'冻品店'},{n:'生鲜店'},{n:'文创潮玩店'},{n:'文具店'},{n:'玩具店'},{n:'3C数码店'},{n:'花店'},{n:'电池店'},{n:'棋牌设备店'},{n:'乳企奶亭'}]},
+  {n:'食杂店',d:'不细分',k:[{n:'食杂店',t:['城区','乡镇','农村','报刊亭']}]},
+  {n:'菜市场',d:'不细分',k:[{n:'菜市场'}]},
+  {n:'批发市场',d:'品类',k:[{n:'农批市场'},{n:'食品副食批发'},{n:'小商品市场'},{n:'旧货市场'}]}
+]},
+{n:'特通渠道',c:'s',k:[
+  {n:'学校',d:'校内业态',k:[{n:'食堂'},{n:'便利店'},{n:'超市'},{n:'餐饮'},{n:'自动售卖'}]},
+  {n:'医院',d:'院内业态',k:[{n:'食堂'},{n:'便利店'},{n:'超市'},{n:'自动售卖'}]},
+  {n:'枢纽',d:'交通业态',k:[{n:'便利店'},{n:'餐饮'},{n:'超市'},{n:'自动售卖'}]},
+  {n:'园区',d:'园区业态',k:[{n:'食堂'},{n:'便利店'},{n:'餐饮'},{n:'自动售卖'}]},
+  {n:'政企',d:'单位业态',k:[{n:'食堂'},{n:'便利店'},{n:'其他服务'}]},
+  {n:'加油站',d:'油站业态',k:[{n:'便利店'},{n:'自动售卖'}]},
+  {n:'休闲娱乐',d:'娱乐业态',k:[{n:'KTV'},{n:'酒吧/清吧'},{n:'夜店'},{n:'网吧/电竞馆'},{n:'影院/景区/体育场馆'}]},
+  {n:'自动售卖',d:'公共点位',k:[{n:'自动售卖'}]}
+]}];
+
+let ed={};
+
+function bt(n,fn1,fn2){
+  return '<span class="btn" onclick="event.stopPropagation();'+fn1+'">+</span>'
+    +'<span class="btn del" onclick="event.stopPropagation();'+fn2+'">−</span>';
+}
+
+function renderL1(d,i){
+  const c=d.c==='m'?'ml1':d.c==='t'?'tl1':'sl1';
+  let h='<div class="l1">';
+  h+='<span class="l1t '+c+'" ondblclick="editName('+i+')">'+d.n+'</span>';
+  h+=bt(d,'addL2('+i+')','delL1('+i+')');
+  d.k.forEach((l2,j)=>{
+    h+='<div class="l2">';
+    h+='<span class="l2t" ondblclick="editL2('+i+','+j+')">'+l2.n+'</span>';
+    if(l2.d)h+='<span class="tag-dim" ondblclick="editDim('+i+','+j+')">'+l2.d+'</span>';
+    h+=bt(l2,'addL3('+i+','+j+')','delL2('+i+','+j+')');
+    if(l2.k&&l2.k.length){
+      h+='<div class="l3">';
+      l2.k.forEach((l3,k)=>{
+        h+='<span class="l3t" ondblclick="editL3('+i+','+j+','+k+')">'+l3.n+'</span>';
+        h+=bt(l3,'addSub('+i+','+j+','+k+')','delL3('+i+','+j+','+k+')');
+      });
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function build(){
+  document.getElementById('tree').innerHTML=DATA.map((d,i)=>renderL1(d,i)).join('');
+  buildTags();
+}
+
+function editName(i){ed={l1:i};open('编辑一级类目',DATA[i].n,(v)=>{DATA[i].n=v;build();});}
+function editL2(i,j){ed={l1:i,l2:j};open('编辑二级类目',DATA[i].k[j].n,(v)=>{DATA[i].k[j].n=v;build();});}
+function editL3(i,j,k){ed={l1:i,l2:j,l3:k};open('编辑三级类目',DATA[i].k[j].k[k].n,(v)=>{DATA[i].k[j].k[k].n=v;build();});}
+function editDim(i,j){ed={l1:i,l2:j,dim:1};open('编辑维度',DATA[i].k[j].d||'',(v)=>{DATA[i].k[j].d=v||undefined;build();});}
+
+function addL2(i){open('新二级类目','',(v)=>{if(!v)return;DATA[i].k.push({n:v,k:[]});build();});}
+function addL3(i,j){open('新三级类目','',(v)=>{if(!v)return;if(!DATA[i].k[j].k)DATA[i].k[j].k=[];DATA[i].k[j].k.push({n:v});build();});}
+function addSub(i,j,k){open('新子节点','',(v)=>{if(!v)return;if(!DATA[i].k[j].k[k].k)DATA[i].k[j].k[k].k=[];DATA[i].k[j].k[k].k.push({n:v});build();});}
+function addL1(){open('新一级类目','',(v)=>{if(!v)return;DATA.push({n:v,c:'',k:[]});build();});}
+
+function delL1(i){DATA.splice(i,1);build();}
+function delL2(i,j){DATA[i].k.splice(j,1);build();}
+function delL3(i,j,k){DATA[i].k[j].k.splice(k,1);build();}
+
+function open(title,val,cb){
+  document.getElementById('olp').textContent=title;
+  document.getElementById('oli').value=val;
+  document.getElementById('ol').style.display='flex';
+  document.getElementById('oli').focus();
+  ed.cb=cb;
+}
+document.getElementById('oli').onkeydown=function(e){
+  if(e.key==='Enter')document.getElementById('olok').click();
+  if(e.key==='Escape')closeOL();
+};
+document.getElementById('olok').onclick=function(){
+  const v=document.getElementById('oli').value.trim();
+  if(ed.cb)ed.cb(v);
+  closeOL();
+};
+function closeOL(){document.getElementById('ol').style.display='none';ed={};}
+
+// ---- Tags section ----
+function buildTags(){
+  const rows=[];
+  function walk(l1,path){
+    (l1.k||[]).forEach(l2=>{
+      const p=path+' → '+l2.n;
+      if(l2.d)rows.push({path:p,kind:'维度',tags:[l2.d]});
+      (l2.k||[]).forEach(l3=>{
+        const p3=p+' → '+l3.n;
+        if(l3.t&&l3.t.length)rows.push({path:p3,kind:'标签',tags:l3.t});
+      });
+    });
+  }
+  DATA.forEach(d=>walk(d,d.n));
+  if(!rows.length){document.getElementById('tags').innerHTML='';return;}
+
+  let h='<h3>标签管理器</h3><table class="tags-table"><tr><th>路径</th><th>类型</th><th>标签</th></tr>';
+  rows.forEach(r=>{
+    h+='<tr><td class="node-path">'+r.path+'</td><td>'+r.kind+'</td><td><div class="tag-group">';
+    r.tags.forEach(t=>{
+      h+='<span class="tag-chip" onclick="editTagGlobal(\''+r.path+'\',\''+t+'\',\''+r.kind+'\')">'+t+'<span class="tag-x" onclick="event.stopPropagation();removeTagGlobal(\''+r.path+'\',\''+t+'\',\''+r.kind+'\')">×</span></span>';
+    });
+    h+='<span class="tag-add" onclick="addTagGlobal(\''+r.path+'\',\''+r.kind+'\')">+ 添加</span>';
+    h+='</div></td></tr>';
+  });
+  h+='</table>';
+  document.getElementById('tags').innerHTML=h;
+}
+
+function findNodeByPath(path){
+  const parts=path.split(' → ');
+  if(parts.length<2)return null;
+  for(let d of DATA){
+    if(d.n===parts[0]){
+      if(parts.length===2)return d;
+      for(let l2 of(d.k||[])){
+        if(l2.n===parts[1]){
+          if(parts.length===3)return l2;
+          for(let l3 of(l2.k||[])){
+            if(l3.n===parts[2])return l3;
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function editTagGlobal(path,tag,kind){
+  const n=findNodeByPath(path);if(!n)return;
+  open('编辑标签',tag,(v)=>{
+    if(!v)return;
+    const idx=n.t.indexOf(tag);
+    if(idx>=0)n.t[idx]=v;
+    build();
+  });
+}
+function removeTagGlobal(path,tag,kind){
+  const n=findNodeByPath(path);if(!n||!n.t)return;
+  const idx=n.t.indexOf(tag);
+  if(idx>=0)n.t.splice(idx,1);
+  build();
+}
+function addTagGlobal(path,kind){
+  const n=findNodeByPath(path);if(!n)return;
+  open('新标签','',(v)=>{
+    if(!v)return;
+    if(!n.t)n.t=[];
+    n.t.push(v);
+    build();
+  });
+}
+
+function exportJSON(){
+  const clean=n=>({n:n.n,...(n.d?{d:n.d}:{}),...(n.t&&n.t.length?{t:n.t}:{}),...(n.k&&n.k.length?{k:n.k.map(clean)}:{})});
+  const json=JSON.stringify(DATA.map(clean),null,2);
+  const b=new Blob([json],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='channel-tree.json';a.click();
+}
+
+function importJSON(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(){
+    const f=inp.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=function(e){
+      try{
+        const d=JSON.parse(e.target.result);
+        if(!Array.isArray(d)){alert('格式错误：不是有效的类目树 JSON');return;}
+        DATA.length=0;d.forEach(x=>DATA.push(x));build();
+      }catch(err){alert('解析失败：'+err.message);}
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+build();
+</script>
+</body>
+</html>
